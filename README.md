@@ -1,7 +1,9 @@
 # Password Manager
 密码管理器，练习AES和用户系统设计做的小项目。有时候自己也会用一用。
-<img src="https://ssl.jackzh.com/image/2016-10-15_5-22-38.png" />
-<img src="https://ssl.jackzh.com/image/2016-10-15_5-23-07.png" />
+
+<img src="https://ssl.jackzh.com/image/2016-10-15_5-22-38.png" width="40%" />
+<img src="https://ssl.jackzh.com/image/2016-10-15_5-23-07.png" width="40%" />
+
 ## 已知问题
 * 在用户验证阶段服务器有可能获取解密密匙
 * MD5可能不够安全
