@@ -7,4 +7,10 @@
         public static $dbPassword = "";
         public static $dbName = "web_password_manager";
     }
+
+    class GlobalConfig
+    {
+        // Allow new users to be created
+        public static $allowUserCreation = True;
+    }
 ?>

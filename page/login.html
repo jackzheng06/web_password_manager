@@ -1,0 +1,30 @@
+<div class="default-form" id="login-form">
+    <div class="heading">Login</div>
+    <div class="control-group">
+        <label>USERNAME</label>
+        <input type="text" id="login-username" placeholder="Your username" />
+    </div>
+    <div class="control-group">
+        <label>PASSWORD</label>
+        <input type="password" id="login-password" placeholder="Your password" />
+    </div>
+    <br>
+    <button class="primary-button" id="login-button">Login</button>
+    <a href="#signup"><button class="primary-button">Don't have an account?</button></a>
+</div>
+<script>
+    $(function(){
+        $("#login-button").click(function(){
+            username = $("#login-username").val();
+            password = $("#login-password").val();
+            auth.request_token(username, password, function(status){
+                if(status){
+                    alert("Login successful.");
+                    location.hash = '#main';
+                } else {
+                    alert("Sorry, your username or password does not match.");
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,218 @@
+<div class="info-container" id="auth-required" style="display:none;">
+    <div class="heading">
+        <span class="lg-icon"><i class="fa fa-lock" aria-hidden="true"></i></span>
+        <br>
+        Authentication Required
+    </div>
+    <p>Please <a href="#login">login or signup</a></p>
+</div>
+<div id="authenticated-container" style="display:none;">
+    <h2>Your Vault</h2>
+    <div class="quick-action-bar">
+        <ul>
+            <li id="add-password-button"><i class="fa fa-plus" aria-hidden="true"></i> Add</li>
+        </ul>
+    </div>
+
+    <div class="full-window-dim" id="full-window-dim" style="display:none;"></div>
+    <!--Add password window-->
+    <div class="slidedown-window" id="add-password-window" style="left:-120%;">
+        <div class="heading">Create a new password</div>
+        <div class="content">
+            <div class="control-group">
+                <label>NAME</label>
+                <input type="text" id="new-password-name" placeholder="Choose a name" />
+            </div>
+            <div class="control-group">
+                <label>PASSWORD</label>
+                <input type="text" id="new-password-password" placeholder="Your password" />
+            </div>
+            <div class="control-group">
+                <label>DESCRIPTION</label>
+                <textarea id="new-password-description"></textarea>
+            </div>
+            <br>
+            <button class="primary-button" id="create-add-password-button">Create</button>
+            <button class="error-button" id="cancel-add-password-button">Cancel</button>
+        </div>
+    </div>
+
+    <!--Edit password window-->
+    <div class="slidedown-window" id="edit-password-window" style="left:-120%;">
+        <div class="heading">Edit password</div>
+        <div class="content">
+            <input type="hidden" id="edit-password-id" />
+            <div class="control-group">
+                <label>NAME</label>
+                <input type="text" id="edit-password-name" placeholder="Choose a name" />
+            </div>
+            <div class="control-group">
+                <label>PASSWORD</label>
+                <input type="text" id="edit-password-password" placeholder="Your password" />
+            </div>
+            <div class="control-group">
+                <label>DESCRIPTION</label>
+                <textarea id="edit-password-description"></textarea>
+            </div>
+            <br>
+            <button class="primary-button" id="save-edit-password-button">Save</button>
+            <button class="error-button" id="cancel-edit-password-button">Cancel</button>
+        </div>
+    </div>
+
+    <!--List of passwords-->
+    <div class="list-container" id="password-list"></div>
+</div>
+<script>
+
+    function create_new_password(name, password, description, callback){
+        var callback = callback;
+        encrypted_pwd = encrypt.encryptAes(password, auth.aesKey);
+        $.ajax({
+            url:"api/",
+            type:"POST",
+            data:{
+                action:"create_password",
+                uname:auth.authUname,
+                token:auth.authToken,
+                name:name,
+                password:encrypted_pwd,
+                description:description
+            },
+            dataType:"json",
+            success:function(data){
+                if(data.status == "success"){
+                    callback(true);
+                } else {
+                    callback(false);
+                }
+            },
+            error:function(e){
+                console.log(e);
+                callback(false);
+            }
+        });
+    }
+
+    function reload_password_list(){
+       auth.get_all_password(function(data){
+            $("#password-list").html("");
+            if(data){
+                for(i = 0; i < data.length; i++){
+                    appendStr = "<div class='list-item'>";
+                    //Heading
+                    appendStr += "<div class='heading'>";
+                    appendStr += "<span>" + data[i].pwd_name + "</span>";
+                    appendStr += "</div>";
+                    //Content
+                    appendStr += "<div class='content'>"; 
+                    appendStr += "<div class='control-group'><label>Password</label>";
+                    appendStr += "<pre>" + encrypt.decryptAes(data[i].encrypted_data, auth.aesKey) + "</pre>"; 
+                    appendStr += "</div>";
+                    appendStr += "<div class='control-group'><label>Description</label>";
+                    appendStr += "<p>" + data[i].description + "<p/>"; 
+                    appendStr += "</div>";
+                    appendStr += "<div class='control-group'><label>Actions</label>";
+                    appendStr += "<button class='primary-button edit-password-button' pwd-index='" + i + "'>Edit</button> "; 
+                    appendStr += "<button class='error-button delete-password-button' pwd-id='" + data[i].id + "'>Delete</button>"; 
+                    appendStr += "</div>";
+                    //End
+                    appendStr += "</div>";
+                    $("#password-list").append(appendStr);
+                }
+                $("#password-list .list-item .heading").click(function(){
+                    if($(this).parent().hasClass("active")){
+                        $(this).parent().removeClass("active");
+                    } else {
+                        $(this).parent().addClass("active");
+                    }
+                });
+                //Bind delete password button events
+                $(".delete-password-button").click(function(){
+                    console.log($(this).attr("pwd-id"));
+                    if(confirm("Are you sure?")){
+                        auth.delete_password($(this).attr("pwd-id"), function(status){
+                            if(status){
+                                reload_password_list();
+                            } else {
+                                alert("Failed to delete");
+                            }
+                        });
+                    }
+                    
+                });
+                //Bind edit password button events
+                $(".edit-password-button").click(function(){
+                    $("#edit-password-window").animate({'left':0});
+                    $("#full-window-dim").fadeIn();
+                    passwordIndex = $(this).attr("pwd-index");
+                    $("#edit-password-id").val(auth.pwdListTemp[passwordIndex].id);
+                    $("#edit-password-name").val(auth.pwdListTemp[passwordIndex].pwd_name);
+                    $("#edit-password-password").val(encrypt.decryptAes(auth.pwdListTemp[passwordIndex].encrypted_data, auth.aesKey));
+                    $("#edit-password-description").val(auth.pwdListTemp[passwordIndex].description);
+                });
+
+            } else {
+                alert("Failed to load password list");
+            }
+        });
+    }
+
+    $(function(){
+        $("#add-password-button").click(function(){
+            $("#add-password-window").animate({'left':0});
+            $("#full-window-dim").fadeIn();
+        });
+        $("#cancel-add-password-button").click(function(){
+            $("#add-password-window").animate({'left':"-120%"});
+            $("#full-window-dim").fadeOut();
+        });
+        $("#cancel-edit-password-button").click(function(){
+            $("#edit-password-window").animate({'left':"-120%"});
+            $("#full-window-dim").fadeOut();
+        });
+        $("#create-add-password-button").click(function(){
+            create_new_password(
+                $("#new-password-name").val(),
+                $("#new-password-password").val(),
+                $("#new-password-description").val(),
+                function(status){
+                    if(status){
+                        alert("Password Created");
+                        $("#add-password-window").animate({'left':"-120%"});
+                        $("#full-window-dim").fadeOut();
+                        reload_password_list();
+                    }
+                }
+            );
+        });
+        $("#save-edit-password-button").click(function(){
+            auth.update_password(
+                $("#edit-password-id").val(),
+                $("#edit-password-name").val(),
+                encrypt.encryptAes($("#edit-password-password").val(), auth.aesKey),
+                $("#edit-password-description").val(),
+                function(status){
+                    if(status){
+                        alert("Password Updated");
+                        $("#edit-password-window").animate({'left':"-120%"});
+                        $("#full-window-dim").fadeOut();
+                        reload_password_list();
+                    }
+                }
+            )
+        });
+        
+        auth.reload_auth_status(function(status){
+            if(status){
+                $("#authenticated-container").show();
+                reload_password_list();
+            } else {
+                $("#auth-required").show();
+            }
+        });
+    });
+
+    
+    
+</script>
