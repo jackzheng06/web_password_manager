@@ -19,10 +19,10 @@
             password = $("#login-password").val();
             auth.request_token(username, password, function(status){
                 if(status){
-                    alert("Login successful.");
+                    ui.new_notification("success", "Login successful", 3000);
                     location.hash = '#main';
                 } else {
-                    alert("Sorry, your username or password does not match.");
+                    ui.new_notification("error", "Your username or password does not match.", 3000);
                 }
             });
         });

@@ -71,4 +71,24 @@ function UiFramework(){
         $("#loading-indicator").fadeOut();
     }
 
+   /**
+    * Display a new notification to user
+    * noti_type can be "Alert", "Error", "Success" or "Message"
+    * @param {String} noti_type
+    * @param {String} message 
+    * @param {Integer} timeout
+    */
+    this.new_notification = function(noti_type, message, timeout){
+        $noti = $('<div></div>');
+        $noti.addClass("notification");
+        $noti.addClass(noti_type);
+        $noti.html(message);
+        $("body").append($noti);
+        $noti.animate({'right':20});
+        var $noti = $noti;
+        setTimeout(function(){
+            $noti.fadeOut();
+        },timeout);
+    }
+
 }

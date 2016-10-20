@@ -7,7 +7,13 @@ function EncryptionFramework(){
     * @return {String} encrypted string
     */
     this.encryptAes = function(data, password){
-        return sjcl.encrypt(password, data, {mode : "ccm"});
+        try{
+            encrypted = sjcl.encrypt(password, data, {mode : "ccm"});
+        } catch (e){
+            encrypted = false;
+        }
+
+        return encrypted;
     }
 
    /**
@@ -17,6 +23,21 @@ function EncryptionFramework(){
     * @return {String} decrypted string
     */
     this.decryptAes = function(data, password){
-        return sjcl.decrypt(password, data);
+        try{
+            decrypted = sjcl.decrypt(password, data);
+        } catch(e){
+            decrypted = false;
+        }
+        return decrypted;
+    }
+
+    /**
+     * Encrypt a string with default encryption mode
+     * @param {String} data
+     * @param {String} password
+     * @return {String} encrypted string, in json format
+     */
+    this.encrypt = function(data, password){
+        return this.encryptAes(data, password);
     }
 }

@@ -182,10 +182,10 @@ function AuthenticationFramework(){
                 if(data.status == "success"){
                     self.authToken = data.message;
                     self.authUname = MD5(username);
-                    self.aesKey = password;
+                    self.aesKey = self.hash_password(password);
                     self.set_cookie("wpm_uname", MD5(username), 1);
                     self.set_cookie("wpm_token", data.message, 1);
-                    self.set_cookie("wpm_key", password, 1);
+                    self.set_cookie("wpm_key", self.aesKey, 1);
                     callback(true);
                 } else {
                     callback(false);
