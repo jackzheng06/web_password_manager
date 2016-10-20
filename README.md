@@ -1,4 +1,12 @@
 # Password Manager
+## New Encryption Procedure / 新的加密程序
+
+新的加密程序使用两个密码杂凑。设计原则为HTTPS不安全，服务器不安全，并且在网络中传输过的数据全部不安全。
+
+可能需要一段时间才能完成修改，请耐心等待。
+
+<img src="https://ssl.jackzh.com/image/Encryption%20Procedure.jpg" />
+
 密码管理器，练习AES和用户系统设计做的小项目。有时候自己也会用一用。
 
 <img src="https://ssl.jackzh.com/image/2016-10-15_5-22-38.png" width="40%" />
