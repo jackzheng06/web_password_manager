@@ -4,14 +4,14 @@
         <title></title>
         <meta charset="utf-8">
         <link href="less/main.less" type="text/less" rel="stylesheet" />
-        <link href="https://ssl.jackzh.com/file/css/font-awesome-4.4.0/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
-        <script src="https://ssl.jackzh.com/file/js/jquery/jquery-2.2.2.min.js"></script>
+        <link href="lib/font-awesome-4.6.3/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
+        <script src="lib/jquery-2.2.4.min.js"></script>
         <script src="https://bitwiseshiftleft.github.io/sjcl/sjcl.js"></script>
         <script src="js/ui-framework.js"></script>
         <script src="js/authentication-framework.js"></script>
         <script src="js/encryption-framework.js"></script>
         <script src="js/md5.js"></script>
-        <script src="https://ssl.jackzh.com/file/js/less-js/less.min.js"></script>
+        <script src="lib/less.min.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
