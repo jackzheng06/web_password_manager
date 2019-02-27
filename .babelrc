@@ -1,0 +1,17 @@
+{
+  "presets": [
+    "@babel/preset-env"
+  ],
+  "plugins": [
+    ["module-resolver", {
+      "alias": {
+        "@sequelize": "./src/sequelize",
+        "@models": "./src/models",
+        "@graphql/typeDefs": "./src/graphql/typeDefs",
+        "@graphql/resolvers": "./src/graphql/resolvers",
+        "@controllers": "./src/controllers",
+        "@utilities": "./src/utilities"
+      }
+    }]
+  ]
+}
